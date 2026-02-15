@@ -33,3 +33,5 @@ Thumbs.db
 # Only the generated client is ignored (in node_modules and generated folders)
 prisma/generated/
 .prisma/
+
+/generated/prisma

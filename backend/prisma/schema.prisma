@@ -1,14 +1,70 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+  name     String
+  rooms    Room[]
+  polls    Poll[]
+  votes    Vote[]
+}
+
+model Room {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  adminId   String
+  admin     User     @relation(fields: [adminId], references: [id])
+  polls     Poll[]
+}
+
+model Poll {
+  id          String       @id @default(uuid())
+  roomId      Int
+  room        Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  createdById String
+  createdBy   User         @relation(fields: [createdById], references: [id])
+  question    String
+  createdAt   DateTime     @default(now())
+  isActive    Boolean      @default(true)
+  options     PollOption[]
+  votes       Vote[]
+
+  @@index([roomId])
+  @@index([createdById])
+}
+
+model PollOption {
+  id     String @id @default(uuid())
+  pollId String
+  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  text   String
+  order  Int // To maintain option order (0, 1, 2, etc.)
+  votes  Vote[]
+
+  @@unique([pollId, order])
+  @@index([pollId])
+}
+
+model Vote {
+  id       String     @id @default(uuid())
+  pollId   String
+  poll     Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  optionId String
+  option   PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User       @relation(fields: [userId], references: [id])
+  votedAt  DateTime   @default(now())
+
+  @@unique([pollId, userId]) // Ensure a user can only vote once per poll
+  @@index([pollId])
+  @@index([optionId])
+  @@index([userId])
 }
