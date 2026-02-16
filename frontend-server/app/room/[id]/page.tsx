@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Container } from '@/components/Container';
-import { Button } from '@/components/Button';
+import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { PageHeader } from '@/components/PageHeader';
 import { CreatePollForm } from '@/components/CreatePollForm';
@@ -82,9 +82,9 @@ export default function RoomPage() {
           onShare={copyLink}
         />
 
-        <div className="bg-white p-8 rounded-xl shadow-lg">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Polls</h2>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold tracking-tight">Polls</h2>
             <Button onClick={() => setShowCreate(!showCreate)}>
               {showCreate ? 'Cancel' : '+ Create Poll'}
             </Button>

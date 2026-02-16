@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,30 +17,36 @@ export function Navbar() {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
+    <nav className="bg-background border-b border-border px-6 py-4 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
+        <Link href="/" className="text-2xl font-bold tracking-tight text-primary hover:text-primary/90 transition-colors">
           itsmyscreen
         </Link>
         
         <div className="flex gap-4 items-center">
           {isLoggedIn ? (
             <>
-              <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 transition-colors">
-                Dashboard
-              </Link>
-              <button onClick={handleLogout} className="text-gray-700 hover:text-blue-600 transition-colors">
+              <Button asChild variant="ghost">
+                <Link href="/dashboard">
+                  Dashboard
+                </Link>
+              </Button>
+              <Button onClick={handleLogout} variant="outline">
                 Logout
-              </button>
+              </Button>
             </>
           ) : (
             <>
-              <Link href="/signin" className="text-gray-700 hover:text-blue-600 transition-colors">
-                Sign In
-              </Link>
-              <Link href="/signup" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                Sign Up
-              </Link>
+              <Button asChild variant="ghost">
+                <Link href="/signin">
+                  Sign In
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link href="/signup">
+                  Sign Up
+                </Link>
+              </Button>
             </>
           )}
         </div>

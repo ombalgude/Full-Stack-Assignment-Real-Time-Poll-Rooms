@@ -1,7 +1,7 @@
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-200 px-6 py-8 mt-auto">
-      <div className="max-w-7xl mx-auto text-center text-gray-600">
+    <footer className="bg-background border-t border-border px-6 py-8 mt-auto">
+      <div className="max-w-7xl mx-auto text-center text-muted-foreground">
         <p className="text-sm">© 2026 itsmyscreen. All rights reserved.</p>
         <p className="mt-2 text-sm">
           Built with ❤️ by{' '}
@@ -9,7 +9,7 @@ export function Footer() {
             href="https://github.com/ombalgude" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
+            className="text-primary hover:underline font-medium"
           >
             Om Balgude
           </a>
@@ -18,7 +18,7 @@ export function Footer() {
             href="https://x.com/omm_0405" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
+            className="text-primary hover:underline font-medium"
           >
             X (Twitter)
           </a>
