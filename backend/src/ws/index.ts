@@ -9,8 +9,6 @@ export function startWebSocketServer(port: number) {
     console.log(`WebSocket server started on port ${port}`);
 
     wss.on("connection", (ws: WebSocket) => {
-        console.log("New WebSocket connection");
-
         ws.on("message", (message: string) => {
             try {
                 const data = JSON.parse(message);
@@ -41,7 +39,6 @@ export function startWebSocketServer(port: number) {
                     }
                 }
             });
-            console.log("WebSocket disconnected");
         });
     });
 }

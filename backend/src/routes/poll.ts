@@ -90,8 +90,12 @@ router.post("/:id/vote", authMiddleware, async (req: Request, res: Response) => 
         const pollId = parseInt(req.params.id as string);
         const { optionId } = req.body;
         const userId = req.userId!;
-
-        const existingVote = await prismaClient.vote.findUnique({
+        
+        // Get IP address
+        const ipAddress = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '0.0.0.0';
+        const ip = Array.isArray(ipAddress) ? ipAddress[0] : ipAddress;
+        
+        const existingVoteByUser = await prismaClient.vote.findUnique({
             where: {
                 userId_pollId: {
                     userId,
@@ -100,16 +104,31 @@ router.post("/:id/vote", authMiddleware, async (req: Request, res: Response) => 
             }
         });
 
-        if (existingVote) {
+        if (existingVoteByUser) {
              res.status(400).json({ message: "You have already voted in this poll." });
              return;
+        }
+
+        const existingVoteByIP = await prismaClient.vote.findUnique({
+             where: {
+                 pollId_ipAddress: {
+                     pollId,
+                     ipAddress: ip
+                 }
+             }
+        });
+
+        if (existingVoteByIP) {
+            res.status(400).json({ message: "You have already voted in this poll from this device." });
+            return;
         }
 
         await prismaClient.vote.create({
             data: {
                 userId,
                 pollId,
-                optionId: parseInt(optionId)
+                optionId: parseInt(optionId),
+                ipAddress: ip
             }
         });
         

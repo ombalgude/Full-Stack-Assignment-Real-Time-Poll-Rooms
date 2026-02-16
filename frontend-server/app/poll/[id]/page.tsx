@@ -58,7 +58,7 @@ export default function PollPage() {
     if (!selected) return;
     
     if (!localStorage.getItem('token')) {
-      router.push('/signin');
+      router.push(`/signin?redirect=/poll/${pollId}`);
       return;
     }
 
