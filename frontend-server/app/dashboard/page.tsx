@@ -23,18 +23,32 @@ export default function DashboardPage() {
   const [roomName, setRoomName] = useState('');
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rooms, setRooms] = useState<any[]>([]);
 
   useEffect(() => {
     if (!localStorage.getItem('token')) {
       router.push('/signin');
+      return;
     }
+    
+    fetchRooms();
   }, [router]);
+
+  const fetchRooms = async () => {
+    try {
+      const { data } = await roomAPI.getAll();
+      setRooms(data);
+    } catch (err) {
+      console.error("Failed to fetch rooms", err);
+    }
+  };
 
   const createRoom = async () => {
     setLoading(true);
     try {
       const { data } = await roomAPI.create(roomName || 'Untitled Room');
       setOpen(false);
+      setRoomName(''); 
       router.push(`/room/${data.roomId}`);
     } catch (err) {
       alert('Failed to create room');
@@ -81,15 +95,7 @@ export default function DashboardPage() {
           </Dialog>
         </div>
         
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* 
-                TODO: Fetch actual rooms list. 
-                Currently the API might only support creating rooms or implicit rooms.
-                Based on previous code, there was no "Your Rooms" list in state, only empty state or headers.
-                If there is an API to get rooms, we should add it.
-                For now, preserving the "No rooms yet" state but styled better.
-            */}
-            
+        {rooms.length === 0 ? (
             <Card className="col-span-full py-16 text-center bg-muted/50 border-dashed">
                 <CardContent>
                     <h3 className="text-xl font-semibold mb-2">No rooms yet</h3>
@@ -97,7 +103,29 @@ export default function DashboardPage() {
                     <Button variant="outline" onClick={() => setOpen(true)}>Create Room</Button>
                 </CardContent>
             </Card>
-        </div>
+        ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {rooms.map((room) => (
+                    <Card 
+                        key={room.id} 
+                        className="cursor-pointer hover:shadow-md transition-all hover:border-primary/50"
+                        onClick={() => router.push(`/room/${room.id}`)}
+                    >
+                        <CardHeader>
+                            <CardTitle className="text-lg">{room.name}</CardTitle>
+                            <CardDescription>Created {new Date(room.createdAt).toLocaleDateString()}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                    {room._count?.polls || 0} polls
+                                </span>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        )}
       </div>
     </Container>
   );

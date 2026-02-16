@@ -29,6 +29,37 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     }
 });
 
+// Get all rooms for user
+router.get("/", authMiddleware, async (req: Request, res: Response) => {
+    try {
+        const userId = req.userId;
+
+        if (!userId) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const rooms = await prismaClient.room.findMany({
+            where: {
+                creatorId: userId
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                _count: {
+                    select: { polls: true }
+                }
+            }
+        });
+
+        res.json(rooms);
+    } catch (error) {
+        console.error("Get all rooms error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 // Get Room details with Polls
 router.get("/:id", async (req: Request, res: Response) => {
     try {

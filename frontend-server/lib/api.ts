@@ -21,6 +21,11 @@ export const roomAPI = {
       headers: { Authorization: `Bearer ${getToken()}` }
     }),
   
+  getAll: () =>
+    axios.get(`${API_URL}/rooms`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    }),
+
   get: (id: number) =>
     axios.get(`${API_URL}/rooms/${id}`),
 };
