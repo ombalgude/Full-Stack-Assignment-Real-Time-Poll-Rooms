@@ -23,7 +23,9 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
                 roomId: parseInt(roomId),
                 creatorId: userId,
                 options: {
-                    create: options.map((opt: string) => ({ text: opt })) // Expecting ["Option A", "Option B"]
+                    create: options.map((opt: { text: string } | string) => ({ 
+                        text: typeof opt === 'string' ? opt : opt.text 
+                    })) // Handle both string array and object array just in case
                 }
             },
             include: {

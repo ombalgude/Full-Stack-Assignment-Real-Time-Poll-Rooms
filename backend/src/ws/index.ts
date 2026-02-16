@@ -3,10 +3,12 @@ import { WebSocketServer, WebSocket } from "ws";
 // Map<roomId, Set<WebSocket>> store info key-value type pairs
 const roomSubscribers = new Map<number, Set<WebSocket>>();
 
-export function startWebSocketServer(port: number) {
-    const wss = new WebSocketServer({ port });
+import { Server } from "http";
 
-    console.log(`WebSocket server started on port ${port}`);
+export function setupWebSocket(server: Server) {
+    const wss = new WebSocketServer({ server });
+
+    console.log(`WebSocket server attached`);
 
     wss.on("connection", (ws: WebSocket) => {
         ws.on("message", (message: string) => {

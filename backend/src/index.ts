@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import mainRouter from "./routes/index";
 
-import { startWebSocketServer } from "./ws";
+import { setupWebSocket as startWebSocketServer } from "./ws";
 
 const app = express();
 app.use(express.json());
@@ -15,9 +15,11 @@ app.get("/", (req, res) => {
   res.send("Welcome to the Real Time Poll Rooms landing page");
 });
 
-// WebSocket server
-startWebSocketServer(8080);
+const PORT = process.env.PORT || 3000;
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+const server = app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
+
+// WebSocket server setup
+startWebSocketServer(server);

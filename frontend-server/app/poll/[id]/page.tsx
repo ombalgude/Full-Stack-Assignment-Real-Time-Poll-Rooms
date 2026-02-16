@@ -9,7 +9,7 @@ import { VotingForm } from '@/components/VotingForm';
 import { PollResults } from '@/components/PollResults';
 import { pollAPI } from '@/lib/api';
 
-const WS_URL = 'ws://localhost:8080';
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3000';
 
 export default function PollPage() {
   const params = useParams();
