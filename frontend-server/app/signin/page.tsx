@@ -78,15 +78,15 @@ function SignInContent() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            Don't have an account?{' '}
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
             <Link 
               href={redirect === '/dashboard' ? '/signup' : `/signup?redirect=${encodeURIComponent(redirect)}`} 
               className="text-primary hover:underline font-medium"
             >
               Sign Up
             </Link>
-          </div>
+          </p>
         </CardContent>
       </Card>
     </div>

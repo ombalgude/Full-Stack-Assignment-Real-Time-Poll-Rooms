@@ -50,7 +50,7 @@ export default function DashboardPage() {
       setOpen(false);
       setRoomName(''); 
       router.push(`/room/${data.roomId}`);
-    } catch (err) {
+    } catch {
       alert('Failed to create room');
     } finally {
       setLoading(false);

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+
 
 export function PollList({ polls, onPollClick }: any) {
   if (polls.length === 0) {
@@ -22,14 +22,13 @@ export function PollList({ polls, onPollClick }: any) {
           <CardHeader>
             <CardTitle className="text-lg line-clamp-2">{poll.question}</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
+          <CardContent className="pt-0">
+            <div className="flex items-center gap-3 text-sm">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-secondary text-secondary-foreground font-medium text-xs">
                 📝 {poll.options.length} options
               </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                🗳️ {poll.options.reduce((sum: number, o: any) => sum + (o._count?.votes || 0), 0)} votes
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium text-xs">
+                🗳️ {poll.options.reduce((sum: number, o: any) => sum + (o._count?.votes || 0), 0)} Total Votes
               </span>
             </div>
           </CardContent>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Container } from '@/components/Container';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
@@ -20,6 +20,15 @@ export default function PollPage() {
   const [selected, setSelected] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const loadPoll = useCallback(async () => {
+    try {
+      const { data } = await pollAPI.get(pollId);
+      setPoll(data);
+    } catch {
+      alert('Failed to load poll');
+    }
+  }, [pollId]);
 
   useEffect(() => {
     loadPoll();
@@ -43,16 +52,7 @@ export default function PollPage() {
     };
     
     return () => ws.close();
-  }, [pollId]);
-
-  const loadPoll = async () => {
-    try {
-      const { data } = await pollAPI.get(pollId);
-      setPoll(data);
-    } catch (err) {
-      alert('Failed to load poll');
-    }
-  };
+  }, [pollId, loadPoll]);
 
   const handleVote = async () => {
     if (!selected) return;
@@ -100,37 +100,43 @@ export default function PollPage() {
 
   return (
     <Container>
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <PageHeader
-          title={poll.question}
-          subtitle={poll.description || `Created by ${poll.creator}`}
-          onShare={copyLink}
-        />
+      <div className="relative min-h-[calc(100vh-80px)] flex flex-col items-center justify-center py-12 px-4">
+        {/* Background Gradients */}
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-primary/10 via-background to-background"></div>
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom_right,var(--tw-gradient-stops))] from-blue-500/10 via-background to-background"></div>
 
-        {/* Vote Count */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center mb-8">
-          <span className="text-3xl font-bold text-blue-600">{totalVotes}</span>
-          <span className="text-gray-600 ml-2">
-            {totalVotes === 1 ? 'vote' : 'votes'}
-          </span>
-        </div>
+        <div className="w-full max-w-3xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="text-center space-y-4">
+            <PageHeader
+              title={poll.question}
+              subtitle={poll.description || `Created by ${poll.creator}`}
+              onShare={copyLink}
+            />
+            
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/50 border border-border text-sm font-medium text-muted-foreground">
 
-        <div className="bg-white p-8 rounded-xl shadow-lg">
-          {!hasVoted ? (
-            <VotingForm
-              options={poll.options}
-              selected={selected}
-              onSelect={setSelected}
-              onSubmit={handleVote}
-              loading={loading}
-              isLoggedIn={!!localStorage.getItem('token')}
-            />
-          ) : (
-            <PollResults
-              options={poll.options}
-              getPercentage={getPercentage}
-            />
-          )}
+              <span className='px-2'>{totalVotes} {totalVotes === 1 ? 'vote' : 'votes'} cast</span>
+            </div>
+          </div>
+
+          <div className="bg-card/50 backdrop-blur-sm border border-border/60 p-6 md:p-8 rounded-2xl shadow-2xl shadow-primary/5 ring-1 ring-border/50">
+            {!hasVoted ? (
+              <VotingForm
+                question={poll.question}
+                options={poll.options}
+                selected={selected}
+                onSelect={setSelected}
+                onSubmit={handleVote}
+                loading={loading}
+                isLoggedIn={!!localStorage.getItem('token')}
+              />
+            ) : (
+              <PollResults
+                options={poll.options}
+                getPercentage={getPercentage}
+              />
+            )}
+          </div>
         </div>
       </div>
     </Container>

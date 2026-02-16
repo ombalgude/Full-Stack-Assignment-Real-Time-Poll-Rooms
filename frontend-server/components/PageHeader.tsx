@@ -18,7 +18,7 @@ export function PageHeader({ title, subtitle, onShare }: PageHeaderProps) {
       {onShare && (
         <Button onClick={onShare} variant="outline" size="sm" className="gap-2">
            <Share2 className="h-4 w-4" />
-           Share
+           Share Poll Link
         </Button>
       )}
     </div>

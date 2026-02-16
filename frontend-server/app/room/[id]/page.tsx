@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Container } from '@/components/Container';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,15 @@ export default function RoomPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const loadRoom = useCallback(async () => {
+    try {
+      const { data } = await roomAPI.get(roomId);
+      setRoom(data);
+    } catch {
+      alert('Failed to load room');
+    }
+  }, [roomId]);
+
   useEffect(() => {
     loadRoom();
     
@@ -32,16 +41,7 @@ export default function RoomPage() {
     ws.onmessage = () => loadRoom();
     
     return () => ws.close();
-  }, [roomId]);
-
-  const loadRoom = async () => {
-    try {
-      const { data } = await roomAPI.get(roomId);
-      setRoom(data);
-    } catch (err) {
-      alert('Failed to load room');
-    }
-  };
+  }, [roomId, loadRoom]);
 
   const handleCreatePoll = async (question: string, options: string[]) => {
     setLoading(true);
