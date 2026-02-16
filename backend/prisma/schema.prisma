@@ -7,64 +7,52 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
+  id       Int    @id @default(autoincrement())
+  username String @unique
   password String
-  name     String
   rooms    Room[]
-  polls    Poll[]
   votes    Vote[]
+  polls    Poll[]
 }
 
 model Room {
   id        Int      @id @default(autoincrement())
-  slug      String   @unique
+  name      String   @default("Untitled Room") // Simple default
   createdAt DateTime @default(now())
-  adminId   String
-  admin     User     @relation(fields: [adminId], references: [id])
+  creatorId Int
+  creator   User     @relation(fields: [creatorId], references: [id])
   polls     Poll[]
 }
 
 model Poll {
-  id          String       @id @default(uuid())
-  roomId      Int
-  room        Room         @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  createdById String
-  createdBy   User         @relation(fields: [createdById], references: [id])
+  id          Int      @id @default(autoincrement())
   question    String
-  createdAt   DateTime     @default(now())
-  isActive    Boolean      @default(true)
-  options     PollOption[]
+  description String?
+  roomId      Int
+  room        Room     @relation(fields: [roomId], references: [id])
+  creatorId   Int
+  creator     User     @relation(fields: [creatorId], references: [id])
+  options     Option[]
   votes       Vote[]
-
-  @@index([roomId])
-  @@index([createdById])
+  createdAt   DateTime @default(now())
 }
 
-model PollOption {
-  id     String @id @default(uuid())
-  pollId String
-  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
+model Option {
+  id     Int    @id @default(autoincrement())
   text   String
-  order  Int // To maintain option order (0, 1, 2, etc.)
+  pollId Int
+  poll   Poll   @relation(fields: [pollId], references: [id])
   votes  Vote[]
-
-  @@unique([pollId, order])
-  @@index([pollId])
 }
 
 model Vote {
-  id       String     @id @default(uuid())
-  pollId   String
-  poll     Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
-  optionId String
-  option   PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
-  userId   String
-  user     User       @relation(fields: [userId], references: [id])
-  votedAt  DateTime   @default(now())
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
+  pollId   Int
+  poll     Poll   @relation(fields: [pollId], references: [id])
+  optionId Int
+  option   Option @relation(fields: [optionId], references: [id])
 
-  @@unique([pollId, userId]) // Ensure a user can only vote once per poll
-  @@index([pollId])
-  @@index([optionId])
-  @@index([userId])
+  @@unique([userId, pollId])
 }
