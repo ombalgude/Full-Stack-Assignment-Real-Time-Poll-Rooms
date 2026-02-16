@@ -46,9 +46,13 @@ export default function RoomPage() {
   const handleCreatePoll = async (question: string, options: string[]) => {
     setLoading(true);
     try {
-      await pollAPI.create(question, roomId, options);
+      const { data } = await pollAPI.create(question, roomId, options);
       setShowCreate(false);
-      loadRoom();
+      if (data && data.poll && data.poll.id) {
+          router.push(`/poll/${data.poll.id}`);
+      } else {
+          loadRoom();
+      }
     } catch (err) {
       alert('Failed to create poll');
     } finally {
