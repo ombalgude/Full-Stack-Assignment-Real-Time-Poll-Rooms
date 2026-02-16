@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 });
 
 // WebSocket server
-startWebSocketServer(8080);
+startWebSocketServer(8081);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
