@@ -10,8 +10,7 @@ import { CreatePollForm } from '@/components/CreatePollForm';
 import { PollList } from '@/components/PollList';
 import { roomAPI, pollAPI } from '@/lib/api';
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3000';
-
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 export default function RoomPage() {
   const params = useParams();
   const router = useRouter();
@@ -34,13 +33,15 @@ export default function RoomPage() {
     loadRoom();
     
     // WebSocket for real-time updates
-    const ws = new WebSocket(WS_URL);
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: 'join_room', roomId }));
-    };
-    ws.onmessage = () => loadRoom();
-    
-    return () => ws.close();
+    if (WS_URL) {
+      const ws = new WebSocket(WS_URL);
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'join_room', roomId }));
+      };
+      ws.onmessage = () => loadRoom();
+      
+      return () => ws.close();
+    }
   }, [roomId, loadRoom]);
 
   const handleCreatePoll = async (question: string, options: string[]) => {

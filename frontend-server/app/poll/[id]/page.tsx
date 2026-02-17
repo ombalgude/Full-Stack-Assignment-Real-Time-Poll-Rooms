@@ -9,7 +9,7 @@ import { VotingForm } from '@/components/VotingForm';
 import { PollResults } from '@/components/PollResults';
 import { pollAPI } from '@/lib/api';
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3000';
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 
 export default function PollPage() {
   const params = useParams();
@@ -34,24 +34,26 @@ export default function PollPage() {
     loadPoll();
     
     // WebSocket for real-time updates
-    const ws = new WebSocket(WS_URL);
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'poll_updated' && data.payload.pollId === pollId) {
-        setPoll((prev: any) => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            options: prev.options.map((opt: any) => {
-              const updated = data.payload.options.find((o: any) => o.id === opt.id);
-              return updated ? { ...opt, votes: updated.votes } : opt;
-            }),
-          };
-        });
-      }
-    };
-    
-    return () => ws.close();
+    if (WS_URL) {
+      const ws = new WebSocket(WS_URL);
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'poll_updated' && data.payload.pollId === pollId) {
+          setPoll((prev: any) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              options: prev.options.map((opt: any) => {
+                const updated = data.payload.options.find((o: any) => o.id === opt.id);
+                return updated ? { ...opt, votes: updated.votes } : opt;
+              }),
+            };
+          });
+        }
+      };
+      
+      return () => ws.close();
+    }
   }, [pollId, loadPoll]);
 
   const handleVote = async () => {
