@@ -8,6 +8,7 @@ A full-stack web application for creating polls with real-time results. Users ca
 
 ## Table of Contents
 
+- [Features Implemented](#features-implemented)
 - [Fairness & Anti-Abuse Mechanisms](#fairness--anti-abuse-mechanisms)
 - [Edge Cases Handled](#edge-cases-handled)
 - [Known Limitations & Future Improvements](#known-limitations--future-improvements)
@@ -17,6 +18,15 @@ A full-stack web application for creating polls with real-time results. Users ca
 
 ---
 
+## Features Implemented
+
+- **Poll Creation**: Create polls with 2-5 customizable options within organized rooms
+- **Shareable Links**: Share room and poll URLs for easy collaboration
+- **Real-Time Result Updates**: Live vote counts via WebSocket - see results update instantly
+- **Fairness/Anti-Abuse Mechanisms**: Dual-layer duplicate vote prevention (User ID + IP Address)
+- **Persistent Data Storage**: PostgreSQL database with Prisma ORM for reliable data persistence
+  
+---
 ## Fairness & Anti-Abuse Mechanisms
 
 ### 1. User ID-Based Duplicate Prevention
