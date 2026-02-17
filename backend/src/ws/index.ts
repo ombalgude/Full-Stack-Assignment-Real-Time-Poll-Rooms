@@ -6,7 +6,22 @@ const roomSubscribers = new Map<number, Set<WebSocket>>();
 import { Server } from "http";
 
 export function setupWebSocket(server: Server) {
-    const wss = new WebSocketServer({ server });
+    const wss = new WebSocketServer({ 
+        server,
+        verifyClient: (info, done) => {
+            const origin = info.origin;
+            const allowedOrigins = [
+                process.env.FRONTEND_URL,
+            ];
+
+            if (!origin || allowedOrigins.includes(origin)) {
+                done(true);
+            } else {
+                console.log(`Blocked WebSocket connection from origin: ${origin}`);
+                done(false, 403, "Forbidden");
+            }
+        }
+    });
 
     console.log(`WebSocket server attached`);
 
