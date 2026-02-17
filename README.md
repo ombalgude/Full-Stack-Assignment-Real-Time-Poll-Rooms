@@ -7,6 +7,7 @@ A full-stack web application for creating polls with real-time results. Users ca
 **Live Demo**: [Deployed URL](https://full-stack-assignment-real-time-pol.vercel.app/)
 
 **Demo account credentials** : 
+
 username: demo , password: demo
 
 ## Table of Contents
