@@ -1,6 +1,6 @@
 # Full-Stack Assignment: Real-Time Poll Rooms
 
-A full-stack web application for creating polls with real-time results. Users can create rooms, add polls, share links, and see live vote updates via WebSocket.
+A full-stack web application for creating polls with real-time results. Users can create rooms, add polls, share links, and see live vote updates.
 
 **Tech Stack**: Next.js, Express, PostgreSQL, Prisma, WebSocket
 
