@@ -41,22 +41,11 @@ A full-stack web application for creating polls with real-time results. Users ca
 - **How**: Each authenticated user can vote only once per poll
 - **Why**: Prevents users from voting multiple times across different devices
 
-```typescript
-// Enforced at database level + application check
-@@unique([userId, pollId])
-```
-
 ### 2. IP Address-Based Duplicate Prevention
 
 - **What**: Unique database constraint on `(pollId, ipAddress)`
 - **How**: Tracks IP address for each vote, handles proxies via `x-forwarded-for` header
 - **Why**: Prevents multiple votes from same device/network, even for unauthenticated users
-
-```typescript
-// Captures real client IP behind proxies
-const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-@@unique([pollId, ipAddress])
-```
 
 **Combined Protection**: These two mechanisms work together to prevent both authenticated abuse (same user, different devices) and unauthenticated abuse (same device, different users).
 
